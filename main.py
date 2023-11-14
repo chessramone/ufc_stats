@@ -28,21 +28,6 @@ def fights(card):
 # Main loop
 ################################################################################
 
-# fighter_details_id, full_name, nickname, debut_date, dob, country, height, reach, stance, team
-# con = sqlite3.connect("ufcql.db")
-# cur = con.cursor()
-# for fighter in roster:
-#     data = FighterDetails(f'{r_base}/{fighter}')
-#     params = [ (data['fid']), data['name'], data['nickname'], data['debut'], data['dob'], None, data['height'], data['reach'], data['stance'], None ]
-#     cur.execute(f"""
-#         INSERT INTO roster 
-#         ("fighter_id", "full_name", "nickname", "debut_date", "dob", "country", "height", "reach", "stance", "team")
-#         VALUES
-#         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-#     """, params)
-# con.commit()
-# con.close()
-
 # event_details_id, fight_details_id, fighter_details_id, 
 # round_number,
 # kd, sig_str_landed, sig_str_att, total_str_landed, total_str_att, 
@@ -110,9 +95,6 @@ for event in fight_details:
             red_row =  [eid, fid, data['rid'], rnd+1] + data['red_rbr'] [rnd][1:]
             blue_row = [eid, fid, data['bid'], rnd+1] + data['blue_rbr'][rnd][1:]
 
-            # ic(len(red_row))
-            # ic(red_row)
-
             # event_details_id, fight_details_id, fighter_details_id, 
             # round_number,
             # kd, sig_str_landed, sig_str_att, total_str_landed, total_str_att, 
@@ -129,13 +111,13 @@ for event in fight_details:
             "sig_str_landed", "sig_str_att", "sig_str_perc",
             "total_str_landed", "total_str_att",
             "td_landed", "td_att", "td_perc",
+            "sub_att", "rev", "ctrl",
             "head_landed", "head_att",
             "body_landed", "body_att",
             "legs_landed", "legs_att",
             "distance_landed", "distance_att",
             "clinch_landed", "clinch_att",
-            "ground_landed", "ground_att",
-            "sub_att", "rev", "ctrl"
+            "ground_landed", "ground_att"
             )
             VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -149,13 +131,13 @@ for event in fight_details:
             "sig_str_landed", "sig_str_att", "sig_str_perc",
             "total_str_landed", "total_str_att",
             "td_landed", "td_att", "td_perc",
+            "sub_att", "rev", "ctrl",
             "head_landed", "head_att",
             "body_landed", "body_att",
             "legs_landed", "legs_att",
             "distance_landed", "distance_att",
             "clinch_landed", "clinch_att",
-            "ground_landed", "ground_att",
-            "sub_att", "rev", "ctrl"
+            "ground_landed", "ground_att"
             )
             VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
