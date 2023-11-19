@@ -4,34 +4,6 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 
-# cwd = os.getcwd()
-# cdn = os.path.dirname(__file__)
-
-################################################################################
-# Helper functions:
-################################################################################
-
-def sort_function(card):
-    return int(card.split('_')[0])
-
-roster = os.listdir('html/fighter_details/')
-
-ed_base = 'html/event_details'
-event_details = sorted(os.listdir(ed_base), key=sort_function)
-
-fd_base = 'html/fight_details'
-fight_details = sorted(os.listdir(fd_base), key=sort_function)
-
-r_base = 'html/fighter_details'
-
-def fights(card): 
-    return sorted(os.listdir(f'{fd_base}/{card}'), key=sort_function)
-
-def make_soup(filepath):
-    with open(filepath, 'r') as htmlf:
-        return BeautifulSoup(htmlf, 'html.parser')
-
-
 ################################################################################
 # Fighter Details Page
 # 
@@ -190,7 +162,7 @@ def FightDetails(filename):
     title = 'false'
     if 'title' in weight:
         title = 'true'
-    if 'iterim' in weight:
+    if 'interim' in weight:
         title = 'iterim'
     weight = re.sub("ufc|interim|title|bout|women's", '', weight).strip()
 

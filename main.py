@@ -4,26 +4,50 @@ import csv
 import sqlite3
 from scrape import FightDetails, FighterDetails, Index
 
-################################################################################
-# Helper functions:
-################################################################################
-def sort_function(card):
-    return int(card.split('_')[0])
 
-roster = os.listdir('html/fighter_details/')
-
-ed_base = 'html/event_details'
-event_details = sorted(os.listdir(ed_base), key=sort_function)
-
-fd_base = 'html/fight_details'
-fight_details = sorted(os.listdir(fd_base), key=sort_function)
-
-r_base = 'html/fighter_details'
-
-def fights(card): 
-    return sorted(os.listdir(f'{fd_base}/{card}'), key=sort_function)
-
-    
 ################################################################################
 # Main loop
 ################################################################################
+con = sqlite3.connect("ufcql.db")
+cur = con.cursor()
+# cur.execute("""
+#     CREATE TABLE fights(
+#         event_id            TEXT,
+#         fight_id            TEXT,
+#         fight_order         NUMBER,
+#         red_fighter_id      TEXT,
+#         blue_fighter_id     TEXT,
+#         weightclass         TEXT,
+#         time_format         TEXT,
+#         title_bout          TEXT,
+#         referee             TEXT,
+#         FOREIGN KEY (red_fighter_id)  REFERENCES roster(fighter_id),
+#         FOREIGN KEY (blue_fighter_id) REFERENCES roster(fighter_id)
+#     )
+# """)
+
+for card in fight_details:
+    event_id = get_id(card)
+    for fight in fights(card):
+        fight_id = get_id(fight)
+        fight_order = get_fight_order(fight)
+        data = FightDetails(f'html/fight_details/{card}/{fight}')
+        if data is None:
+            continue
+
+        values = [
+            event_id,
+            fight_id,
+            fight_order,
+            data['rid'],
+            data['bid'],
+            data['weightclass'],
+            data['time_format'],
+            data['for_title'],
+            data['ref']
+        ]
+
+        cur.execute("""INSERT INTO fights VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )""", values)
+
+con.commit()
+cur.close()
