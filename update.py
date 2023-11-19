@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from helpers import *
 
 ################################################################################
-# Update functions
+# Update the html 
 ################################################################################
 
 def update_index():
@@ -42,12 +42,21 @@ def update_event_details():
 
 def update_fight_details():
     """Adds a new directory, and scrapes each fight details page into it"""
-    # create a new folder
-    # scrape each fight link
-    # request the html
-    # write it in the correct file
-    ...
-    
+    new_dir = event_details[-1].split('.')[0]
+    os.mkdir(f'html/fight_details/{new_dir}')
+
+    with open(f'html/event_details/{event_details[-1]}', 'r') as htmlf:
+        soup = BeautifulSoup(htmlf, 'html.parser')
+    rows = soup.find_all('tr')[1:]
+    fight_urls = [tr['data-link'] for tr in rows]
+    for order, url in enumerate(fight_urls):
+        order += 1
+        fid = url.split('/')[-1]
+        res = requests.get(url)
+        with open(f'html/fight_details/{new_dir}/{order}_{fid}.html', 'w') as htmlf:
+            htmlf.write(res.text)
+# update_fight_details() 
+
 
 def update_fighter_details():
     """Add new fighters to the roser"""
@@ -55,6 +64,10 @@ def update_fighter_details():
 
 
 
+
+################################################################################
+# Update the html 
+################################################################################
 
 ### KEEP FOR UPDATE
 # con = sqlite3.connect("ufcql.db")
