@@ -3,26 +3,54 @@ import os
 import sqlite3
 from scrape import FightDetails, FighterDetails, Index
 import requests
+from bs4 import BeautifulSoup
+from helpers import *
 
 ################################################################################
 # Update functions
 ################################################################################
 
 def update_index():
+    """Request and write the updated index page from ufcstats.com as html/index.html"""
     res = requests.get('http://ufcstats.com/statistics/events/completed?page=all')
-    with open('html/index', 'w') as index:
-        index.write(res.text)
+    with open('html/index.html', 'w') as htmlf:
+        htmlf.write(res.text)
+    return
+# update_index()
 
 
 def update_event_details():
-    ...
+    """Write the new event details page to the event_details directory"""
+    # get the most recent completed event from html/index.html
+    with open('html/index.html', 'r') as index:
+        soup = BeautifulSoup(index, 'html.parser')
+    new_event = soup.select('tbody tr:nth-of-type(3)')[0].a['href']
+
+    # get the most recent fight card
+    order = int(get_order(event_details[-1])) + 1
+    eid = new_event.split('/')[-1]
+
+    # request the card from ufcstats.com
+    res = requests.get(new_event)
+
+    # write the file
+    with open(f'{ed_base}/{order}_{eid}.html', 'w') as htmlf:
+        htmlf.write(res.text)
+    return
+# update_event_details()
     
 
 def update_fight_details():
+    """Adds a new directory, and scrapes each fight details page into it"""
+    # create a new folder
+    # scrape each fight link
+    # request the html
+    # write it in the correct file
     ...
     
 
 def update_fighter_details():
+    """Add new fighters to the roser"""
     ...
 
 

@@ -3,6 +3,7 @@ from icecream import ic
 from bs4 import BeautifulSoup
 import re
 import pandas as pd
+from helpers import *
 
 ################################################################################
 # Fighter Details Page
