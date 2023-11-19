@@ -60,8 +60,32 @@ def update_fight_details():
 
 def update_fighter_details():
     """Add new fighters to the roser"""
-    ...
+    fd = fight_details[-1]
+    for fight in fights(fd):
+        with open(f'html/fight_details/{fd}/{fight}', 'r') as htmlf:
+            soup = BeautifulSoup(htmlf, 'html.parser')
+        
+        fighters = soup.find_all(class_='b-fight-details__person-text')
+        red, blue = fighters
 
+        r_name = '_'.join(red.a.text.strip().split(' '))
+        r_id = red.a['href'].split('/')[-1]
+
+        b_name = '_'.join(blue.a.text.strip().split(' '))
+        b_id = blue.a['href'].split('/')[-1]
+
+        rf = r_name + '_' + r_id + '.html'
+        bf = b_name + '_' + b_id + '.html'
+
+        with open(f'html/fighter_details/{rf}', 'w') as htmlf:
+            res = requests.get(red.a['href'])
+            htmlf.write(res.text)
+
+        with open(f'html/fighter_details/{bf}', 'w') as htmlf:
+            res = requests.get(blue.a['href'])
+            htmlf.write(res.text)
+
+update_fighter_details()
 
 
 
