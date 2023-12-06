@@ -70,7 +70,8 @@ def FighterDetails(filepath):
 def FightDetails(filename):
     # soup = make_soup(filename)
     with open(filename, 'r') as htmlf:
-        soup = BeautifulSoup(htmlf, 'lxml')
+        soup = BeautifulSoup(htmlf, 'html.parser')
+    ic(soup)
 
     # Not all fights have data:
     if not soup.table:

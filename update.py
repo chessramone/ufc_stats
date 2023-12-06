@@ -88,12 +88,20 @@ def update_fighter_details():
 
 
 ################################################################################
-# Update the html 
+# Update the sqlite db 
 ################################################################################
 
 def update_roster():
     # for fighter in the roser, if the fighter isn't in the db, add them
-    ...
+    con = sqlite3.connect('ufcql.db')
+    cur = con.cursor()
+    for fighter in roster:
+        fd = FighterDetails(f'{r_base}/{fighter}')
+        data = [fd['fid'], fd['name'], fd['nickname'], fd['debut'], fd['dob'], None, fd['height'], fd['reach'], fd['stance'], None]
+        if fd['fid'] == '23dec7c47cb418f8' or fd['fid'] == '69898645d600abdb':
+            ic(data)
+# update_roster() 
+    
 
 
 def update_events():
