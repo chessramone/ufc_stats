@@ -84,14 +84,34 @@ def update_fighter_details():
         with open(f'html/fighter_details/{bf}', 'w') as htmlf:
             res = requests.get(blue.a['href'])
             htmlf.write(res.text)
-
-update_fighter_details()
-
+# update_fighter_details()
 
 
 ################################################################################
 # Update the html 
 ################################################################################
+
+def update_roster():
+    # for fighter in the roser, if the fighter isn't in the db, add them
+    ...
+
+
+def update_events():
+    # we don't need to loop, just isert the most recent event
+    ...
+    
+
+def update_fights():
+    
+    ...
+    
+
+def update_rounds():
+    ...
+    
+
+def update_results():
+    ...
 
 ### KEEP FOR UPDATE
 # con = sqlite3.connect("ufcql.db")
