@@ -91,91 +91,127 @@ def update_fighter_details():
 # Update the sqlite db 
 ################################################################################
 
-def update_roster():
-    # for fighter in the roser, if the fighter isn't in the db, add them
-    con = sqlite3.connect('ufcql.db')
-    cur = con.cursor()
-    for fighter in roster:
-        fd = FighterDetails(f'{r_base}/{fighter}')
-        data = [fd['fid'], fd['name'], fd['nickname'], fd['debut'], fd['dob'], None, fd['height'], fd['reach'], fd['stance'], None]
-        if fd['fid'] == '23dec7c47cb418f8' or fd['fid'] == '69898645d600abdb':
-            ic(data)
-# update_roster() 
-    
-
-
-def update_events():
-    # we don't need to loop, just isert the most recent event
-    ...
-    
-
 def update_fights():
-    
-    ...
-    
+    event_671 = fight_details[-2]
+    event_672 = fight_details[-1]
+    con = sqlite3.connect("ufcql.db")
+    cur = con.cursor()
+    for fight in fights(event_672):
+        fd = FightDetails(f'{fd_base}/{event_672}/{fight}')
+        data = [
+            fd['event_details_id'],
+            fd['fight_details_id'],
+            fd['fight_order'],
+            fd['rid'],
+            fd['bid'],
+            fd['weightclass'],
+            fd['time_format'],
+            fd['for_title'],
+            fd['ref']
+        ]
+        cur.execute("""
+            insert into fights
+            (event_id, fight_id, fight_order, red_fighter_id, blue_fighter_id, weightclass, time_format, title_bout, referee)
+            values
+            (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, data)
+
+    con.commit()
+    con.close()
+# update_fights() 
+
 
 def update_rounds():
-    ...
-    
+    # event_671 = fight_details[-2]
+    # event_672 = fight_details[-1]
+    con = sqlite3.connect("ufcql.db")
+    cur = con.cursor()
+    for fight in fights(event_672):
+        fd = FightDetails(f'{fd_base}/{event_672}/{fight}')
+        for round in range(int(fd['total_rounds'])):
+            red_data = [
+                fd['event_details_id'],
+                fd['fight_details_id'],
+                fd['rid'],
+                round + 1,
+            ] + fd['red_rbr'][round][1:]
+            blue_data = [
+                fd['event_details_id'],
+                fd['fight_details_id'],
+                fd['bid'],
+                round + 1,
+            ] + fd['blue_rbr'][round][1:]
+            cur.execute("""
+                insert into rounds
+                (
+                "event_id", "fight_id", "fighter_id", "round_number",
+                "kd",
+                "sig_str_landed", "sig_str_att", "sig_str_perc",
+                "total_str_landed", "total_str_att",
+                "td_landed", "td_att", "td_perc",
+                "sub_att", "rev", "ctrl",
+                "head_landed", "head_att",
+                "body_landed", "body_att",
+                "legs_landed", "legs_att",
+                "distance_landed", "distance_att",
+                "clinch_landed", "clinch_att",
+                "ground_landed", "ground_att"
+                )
+                values
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, red_data)
+
+            cur.execute("""
+                insert into rounds
+                (
+                "event_id", "fight_id", "fighter_id", "round_number",
+                "kd",
+                "sig_str_landed", "sig_str_att", "sig_str_perc",
+                "total_str_landed", "total_str_att",
+                "td_landed", "td_att", "td_perc",
+                "sub_att", "rev", "ctrl",
+                "head_landed", "head_att",
+                "body_landed", "body_att",
+                "legs_landed", "legs_att",
+                "distance_landed", "distance_att",
+                "clinch_landed", "clinch_att",
+                "ground_landed", "ground_att"
+                )
+                values
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, blue_data)
+    con.commit()
+    con.close()
+# update_rounds() 
+
 
 def update_results():
-    ...
+    con = sqlite3.connect("ufcql.db")
+    cur = con.cursor()
 
-### KEEP FOR UPDATE
-# con = sqlite3.connect("ufcql.db")
-# cur = con.cursor()
+    # event_671 = fight_details[-2]
+    event_672 = fight_details[-1]
+    for fight in fights(event_672):
+        fd = FightDetails(f'{fd_base}/{event_672}/{fight}')
+        data = [
+            fd['event_details_id'],
+            fd['fight_details_id'],
+            fd['r_result'],
+            fd['b_result'],
+            fd['total_rounds'],
+            fd['time'],
+            fd['method'],
+            fd['details'],
+        ]
 
-# for event in fight_details:
-#     for fight in fights(event):
-#         eid = event.split('_')[-1]
-#         fid = fight.split('_')[-1].split('.')[0]
-#         order = fight.split('_')[0]
-#         data = FightDetails(f'{fd_base}/{event}/{fight}')
-#         if not data: continue
+        cur.execute( """
+        insert into results
+        (event_id, fight_id, red_result, blue_result, round, time, method, details)
+        values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+        """, data)    
 
-#         for rnd in range(int(data['total_rounds'])):
-#             red_row =  [eid, fid, data['rid'], rnd+1] + data['red_rbr'] [rnd][1:]
-#             blue_row = [eid, fid, data['bid'], rnd+1] + data['blue_rbr'][rnd][1:]
+    con.commit()
+    con.close()
 
-#             cur.execute(f"""
-#             INSERT INTO rounds
-#             (
-#             "event_id", "fight_id", "fighter_id", "round",
-#             "kd",
-#             "sig_str_landed", "sig_str_att", "sig_str_perc",
-#             "total_str_landed", "total_str_att",
-#             "td_landed", "td_att", "td_perc",
-#             "sub_att", "rev", "ctrl",
-#             "head_landed", "head_att",
-#             "body_landed", "body_att",
-#             "legs_landed", "legs_att",
-#             "distance_landed", "distance_att",
-#             "clinch_landed", "clinch_att",
-#             "ground_landed", "ground_att"
-#             )
-#             VALUES
-#             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-#             """, red_row)
-            
-#             cur.execute(f"""
-#             INSERT INTO rounds
-#             (
-#             "event_id", "fight_id", "fighter_id", "round",
-#             "kd",
-#             "sig_str_landed", "sig_str_att", "sig_str_perc",
-#             "total_str_landed", "total_str_att",
-#             "td_landed", "td_att", "td_perc",
-#             "sub_att", "rev", "ctrl",
-#             "head_landed", "head_att",
-#             "body_landed", "body_att",
-#             "legs_landed", "legs_att",
-#             "distance_landed", "distance_att",
-#             "clinch_landed", "clinch_att",
-#             "ground_landed", "ground_att"
-#             )
-#             VALUES
-#             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-#             """, blue_row)
-
-# con.commit()
-# con.close()
+# update_results()

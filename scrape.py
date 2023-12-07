@@ -68,10 +68,10 @@ def FighterDetails(filepath):
 ################################################################################
 
 def FightDetails(filename):
+    ic(filename)
     # soup = make_soup(filename)
     with open(filename, 'r') as htmlf:
         soup = BeautifulSoup(htmlf, 'html.parser')
-    ic(soup)
 
     # Not all fights have data:
     if not soup.table:
@@ -79,7 +79,8 @@ def FightDetails(filename):
 
     # Get the event_details_id, and fight_details_id
     edid = filename.split('/')[-2].split('_')[-1]
-    fdid = filename.split('/')[-1].split('_')[-1]
+    fdid = filename.split('/')[-1].split('_')[-1].split('.')[0]
+    fight_order = filename.split('/')[-1].split('_')[0]
     
     # Get the fighters names, ids, and results:
     fighters = soup.find_all('a', class_='b-link b-fight-details__person-link')
@@ -145,12 +146,6 @@ def FightDetails(filename):
         rd[rn] += red_data
         bd[rn] += blue_data
     
-    # for index, rnd in enumerate(rd):
-    #     rd[idx] = [float(data.replace('%', ''))/100 if '%' in data else data for data in rd]
-    #     bd[idx] = [float(data.replace('%', ''))/100 if '%' in data else data for data in bd]
-
-    # we now have all the round data!
-    # ic(rd, bd)
 
     # Now we want to do the box data at the top of the page
     # see an event on ufcstats.com for reference
@@ -185,6 +180,7 @@ def FightDetails(filename):
     return {
         'event_details_id': edid,
         'fight_details_id': fdid,
+        'fight_order': fight_order,
         'bid': bid,
         'rid': rid,
         'b_name': b_name,
