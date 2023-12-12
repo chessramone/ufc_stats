@@ -49,8 +49,10 @@ def update_fight_details():
 
     with open(f'html/event_details/{event_details[-1]}', 'r') as htmlf:
         soup = BeautifulSoup(htmlf, 'html.parser')
+
     rows = soup.find_all('tr')[1:]
-    fight_urls = [tr['data-link'] for tr in rows]
+    fight_urls = [tr['data-link'] for tr in rows][::-1]
+
     for order, url in enumerate(fight_urls):
         order += 1
         fid = url.split('/')[-1]
@@ -88,20 +90,34 @@ def update_fighter_details():
         with open(f'html/fighter_details/{bf}', 'w') as htmlf:
             res = requests.get(blue.a['href'])
             htmlf.write(res.text)
+
+    return None
 # update_fighter_details()
 
 
 ################################################################################
 # Update the sqlite db 
 ################################################################################
+def updated_events():
+    '''Add the most recent event to the events table'''
+    ...
+
+def update_roser():
+    '''Add the new fighters (use git status to find them) to the roster table'''
+    # basically scrape the correct infor from a list of ids?
+    # or something like that...
+
+    # We can import git, and select the files that wasy as well
+    ...
 
 def update_fights():
-    event_671 = fight_details[-2]
-    event_672 = fight_details[-1]
+    recent_event = fight_details[-1]
+    # ic(recent_event)
+    # return None
     con = sqlite3.connect("ufcql.db")
     cur = con.cursor()
-    for fight in fights(event_672):
-        fd = FightDetails(f'{fd_base}/{event_672}/{fight}')
+    for fight in fights(recent_event):
+        fd = FightDetails(f'{fd_base}/{recent_event}/{fight}')
         data = [
             fd['event_details_id'],
             fd['fight_details_id'],
@@ -126,12 +142,11 @@ def update_fights():
 
 
 def update_rounds():
-    # event_671 = fight_details[-2]
-    # event_672 = fight_details[-1]
+    recent_event = fight_details[-1]
     con = sqlite3.connect("ufcql.db")
     cur = con.cursor()
-    for fight in fights(event_672):
-        fd = FightDetails(f'{fd_base}/{event_672}/{fight}')
+    for fight in fights(recent_event):
+        fd = FightDetails(f'{fd_base}/{recent_event}/{fight}')
         for round in range(int(fd['total_rounds'])):
             red_data = [
                 fd['event_details_id'],
@@ -193,10 +208,9 @@ def update_results():
     con = sqlite3.connect("ufcql.db")
     cur = con.cursor()
 
-    # event_671 = fight_details[-2]
-    event_672 = fight_details[-1]
-    for fight in fights(event_672):
-        fd = FightDetails(f'{fd_base}/{event_672}/{fight}')
+    recent_event = fight_details[-1]
+    for fight in fights(recent_event):
+        fd = FightDetails(f'{fd_base}/{recent_event}/{fight}')
         data = [
             fd['event_details_id'],
             fd['fight_details_id'],
@@ -217,5 +231,4 @@ def update_results():
 
     con.commit()
     con.close()
-
-# update_results()
+update_results()
