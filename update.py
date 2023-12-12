@@ -15,7 +15,8 @@ def update_index():
     res = requests.get('http://ufcstats.com/statistics/events/completed?page=all')
     with open('html/index.html', 'w') as htmlf:
         htmlf.write(res.text)
-    return
+
+    return None
 # update_index()
 
 
@@ -36,7 +37,8 @@ def update_event_details():
     # write the file
     with open(f'{ed_base}/{order}_{eid}.html', 'w') as htmlf:
         htmlf.write(res.text)
-    return
+
+    return None
 # update_event_details()
     
 
@@ -55,6 +57,8 @@ def update_fight_details():
         res = requests.get(url)
         with open(f'html/fight_details/{new_dir}/{order}_{fid}.html', 'w') as htmlf:
             htmlf.write(res.text)
+
+    return None
 # update_fight_details() 
 
 
