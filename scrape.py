@@ -1,8 +1,6 @@
-import os
 from icecream import ic
 from bs4 import BeautifulSoup
 import re
-import pandas as pd
 from helpers import *
 
 ################################################################################
@@ -69,7 +67,7 @@ def FighterDetails(filepath):
 
 def FightDetails(filename):
     ic(filename)
-    # soup = make_soup(filename)
+
     with open(filename, 'r') as htmlf:
         soup = BeautifulSoup(htmlf, 'html.parser')
 
@@ -200,7 +198,7 @@ def FightDetails(filename):
         'red_rbr': rd,
         'bonuses': bonuses,
     } 
-
+    
 # test = FightDetails('html/fight_details/670_5a558ba1ff5e9121/13_b1f2ec122beda7a5.html')
 # ic(test)
 
@@ -209,20 +207,3 @@ def FightDetails(filename):
 # 
 # scrapes the index page
 ################################################################################
-def Index():
-    soup = make_soup('html/index.html')
-    rows = soup.tbody.find_all('tr')[2:]
-    tds = [tr.find_all('td') for tr in rows]
-
-    events = []
-    for td in tds[::-1]:
-        # ic(td)
-        eid = td[0].a['href'].split('/')[-1]
-        name = td[0].a.text.strip()
-        date = td[0].span.text.strip()
-        location = td[1].text.strip()
-        events.append([eid, name, date, location])
-
-    return events
-
-# ic(Index())

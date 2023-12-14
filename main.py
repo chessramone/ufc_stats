@@ -8,3 +8,9 @@
 ################################################################################
 # unused
 ################################################################################
+
+# is_html_in_sync()
+# if not, sync it by calling the appropriate update functions
+
+# sync_db()
+# update the roster, events, ... IN ORDER!

@@ -10,13 +10,13 @@ from helpers import *
 # Update the html 
 ################################################################################
 
+# Pretty stright forward - skip the refacor here.
+# We don't need to return None
 def update_index():
     """Request and write the updated index page from ufcstats.com as html/index.html"""
     res = requests.get('http://ufcstats.com/statistics/events/completed?page=all')
     with open('html/index.html', 'w') as htmlf:
         htmlf.write(res.text)
-
-    return None
 # update_index()
 
 
@@ -109,6 +109,8 @@ def update_roser():
 
     # We can import git, and select the files that wasy as well
     ...
+# update_roser()
+
 
 def update_fights():
     recent_event = fight_details[-1]
@@ -231,4 +233,4 @@ def update_results():
 
     con.commit()
     con.close()
-update_results()
+# update_results()
