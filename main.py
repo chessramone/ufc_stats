@@ -1,16 +1,15 @@
-# from icecream import ic
-# import os
-# import csv
-# import sqlite3
-# from scrape import FightDetails, FighterDetails, Index
-# from helpers import *
+import EventIndex
+import requests
+from bs4 import BeautifulSoup
+import helpers
+from icecream import ic
 
-################################################################################
-# unused
-################################################################################
+# compare the websites index to the index.html on disk
 
-# is_html_in_sync()
-# if not, sync it by calling the appropriate update functions
+## request the remote html file:
+res = requests.get('http://ufcstats.com/statistics/events/completed?page=all')
+remote_soup = helpers.make_soup(res.text)
 
-# sync_db()
-# update the roster, events, ... IN ORDER!
+# remote_recent_event = EventIndex.remote_recent_completed_event(remote_soup)
+
+# ic(remote_soup)

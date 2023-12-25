@@ -1,7 +1,11 @@
 import bs4
+import os
 import requests
 from icecream import ic
 from helpers import make_soup
+import tempfile
+import filecmp
+import difflib
 
 
 index_path = 'html/index.html'
@@ -25,9 +29,14 @@ def scrape_recent_completed_event_soup() -> bs4.element.Tag:
     return recent_event_list[0]
 
 
-def scrape_recent_completed_event_link():
+def scrape_recent_completed_event_link() -> str:
     soup = scrape_recent_completed_event_soup()
     return soup.a['href']
+
+def remote_recent_completed_event(soup) -> str:
+    event = soup.css.select('tbody tr:nth-of-type(3)')
+    ic(event)
+    # return event.a.text.strip()
 
 
 def scrape_all_completed_events_soup() -> list[bs4.element.Tag]:
@@ -59,7 +68,9 @@ def scrape_event_info(soup):
         'location': scrape_event_location(soup),
     }
 
+# ic(scrape_event_info(soup))
 
-upcoming_event_info         =  scrape_event_info(scrape_upcoming_event_soup())
-recent_completed_event_info =  scrape_event_info(scrape_recent_completed_event_soup())
-all_completed_event_info    = [scrape_event_info(event) for event in scrape_all_completed_events_soup()]
+
+# upcoming_event_info         =  scrape_event_info(scrape_upcoming_event_soup())
+# recent_completed_event_info =  scrape_event_info(scrape_recent_completed_event_soup())
+# all_completed_event_info    = [scrape_event_info(event) for event in scrape_all_completed_events_soup()]

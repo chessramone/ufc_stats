@@ -30,10 +30,8 @@ def scrape_new_event_details() -> None:
         htmlf.write(res.text)
 
 
-# get every fight on the card
-def scrape_fight_card_table(file) -> bs4.element.Tag:
+def scrape_fight_card_table(file) -> bs4.element.Tag | None:
     soup = make_soup(file)
-    # could return None
     return soup.table
 
 
@@ -55,22 +53,3 @@ def scrape_fight_card_p_elements(elementTag) -> list:
 
 def scrape_fight_card_fighter_link(elementTag) -> str:
     return elementTag.a['href']
-    
-
-# def scrape_fight_card_fighter_names(elementTag) -> list:
-#     rows: list = scrape_fight_card_tr_elements(elementTag)
-#     data: list = scrape_fight_card_td_elements(rows) 
-#     fighter_names = []
-#     for td in data:
-#         fighter_names.append(scrape_fight_card_p_elements(td))
-#     return fighter_names
-
-
-# This is ugly as fuck
-def make_fight_data_list():
-    rows = []
-    for event in event_details_list:
-        table = scrape_fight_card_table(f'{event_details_dir}/{event}')
-        rows.append(scrape_fight_card_tr_elements(table))
-    return [scrape_fight_card_td_elements(row) for row in rows]
-    

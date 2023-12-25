@@ -1,7 +1,7 @@
 from icecream import ic
 import os
 import sqlite3
-from scrape import FightDetails, FighterDetails, Index
+from scrape import FightDetails, FighterDetails
 import requests
 from bs4 import BeautifulSoup
 from helpers import *
@@ -26,10 +26,12 @@ def update_event_details():
     with open('html/index.html', 'r') as index:
         soup = BeautifulSoup(index, 'html.parser')
     new_event = soup.select('tbody tr:nth-of-type(3)')[0].a['href']
+    ic(new_event)
 
     # get the most recent fight card
     order = int(get_order(event_details[-1])) + 1
     eid = new_event.split('/')[-1]
+    ic(order, eid)
 
     # request the card from ufcstats.com
     res = requests.get(new_event)
@@ -52,6 +54,7 @@ def update_fight_details():
 
     rows = soup.find_all('tr')[1:]
     fight_urls = [tr['data-link'] for tr in rows][::-1]
+    ic(fight_urls)
 
     for order, url in enumerate(fight_urls):
         order += 1
@@ -82,6 +85,8 @@ def update_fighter_details():
 
         rf = r_name + '_' + r_id + '.html'
         bf = b_name + '_' + b_id + '.html'
+
+        ic(r_name, b_name)
 
         with open(f'html/fighter_details/{rf}', 'w') as htmlf:
             res = requests.get(red.a['href'])
